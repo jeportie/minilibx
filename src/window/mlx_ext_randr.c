@@ -1,15 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mlx_ext_randr.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jeportie <jeportie@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/19 21:41:28 by jeportie          #+#    #+#             */
+/*   Updated: 2025/01/19 21:43:05 by jeportie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-
-
-#include	"mlx_int.h"
-
-#include	<unistd.h>
+#include "../../include/mlx_int.h"
+#include <unistd.h>
 #include <X11/extensions/Xrandr.h>
 
 /* global for independant extension */
 
 RRMode	saved_mode = 0;
-
 
 int			mlx_ext_fullscreen(t_xvar *xvar, t_win_list *win, int fullscreen)
 {
