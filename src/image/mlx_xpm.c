@@ -1,345 +1,360 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mlx_xpm.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: <user> <user@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/20 14:02:59 by <user>            #+#    #+#             */
+/*   Updated: 2025/01/20 14:45:43 by jeportie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../include/mlx_int.h"
+
 /*
- ** xpm-read.c for MinilibX in 
- ** 
- ** Made by Charlie Root
- ** Login   <ol@epitech.net>
- ** 
- ** Started on  Tue Dec 11 15:25:27 2001 olivier crouzet
- ** Last update Sat Oct  1 14:56:13 2005 Olivier Crouzet
- */
-
-
-#include	"mlx_int.h"
-
+** We keep the color table in a different file, or as 'extern struct s_col_name'
+** declared in some .c. That is unchanged. So no global macros here.
+*/
 extern struct s_col_name mlx_col_name[];
 
-
-#define	RETURN	{ if (colors) free(colors); if (tab) free(tab); \
-		tab = (void *)0; if (colors_direct) free(colors_direct); \
-		if (img) {XDestroyImage(img->image); \
-				XFreePixmap(xvar->display,img->pix);free(img);} \
-		return ((void *)0);}
-
-
-
-
-char	*mlx_int_get_line(char *ptr,int *pos,int size)
+char	*mlx_int_get_line(char *ptr, int *pos, int size)
 {
-	int			pos2;
-	int			pos3;
-	int			pos4;
+	int	pos2;
+	int	pos3;
+	int	pos4;
 
-	if ((pos2 = mlx_int_str_str(ptr+*pos,"\"",size-*pos))==-1)
-		return ((char *)0);
-	if ((pos3 = mlx_int_str_str(ptr+*pos+pos2+1,"\"",size-*pos-pos2-1))==-1)
-		return ((char *)0);
-	*(ptr+*pos+pos2) = 0;
-	*(ptr+*pos+pos2+1+pos3) = 0;
-	pos4 = *pos+pos2+1;
-	*pos += pos2+pos3+2;
-	return (ptr+pos4);
+	pos2 = mlx_int_str_str(ptr + *pos, "\"", size - *pos);
+	if (pos2 == -1)
+		return (NULL);
+	pos3 = mlx_int_str_str(ptr + *pos + pos2 + 1, "\"",
+			size - *pos - pos2 - 1);
+	if (pos3 == -1)
+		return (NULL);
+	*(ptr + *pos + pos2) = '\0';
+	*(ptr + *pos + pos2 + 1 + pos3) = '\0';
+	pos4 = *pos + pos2 + 1;
+	*pos += (pos2 + pos3 + 2);
+	return (ptr + pos4);
 }
 
-
+/*
+** A simpler version of strlcpy, if we want to avoid macros or certain C libs.
+*/
 unsigned int	strlcpy_is_not_posix(char *dest, char *src, unsigned int size)
 {
-	unsigned	count;
-	unsigned	i;
+	unsigned int	count;
+	unsigned int	i;
 
 	count = 0;
-	while (src[count] != '\0')
-		++count;
+	while (src[count])
+		count++;
 	i = 0;
-	while (src[i] != '\0' && i < (size - 1))
+	while (src[i] && i + 1 < size)
 	{
 		dest[i] = src[i];
-		++i;
+		i++;
 	}
 	dest[i] = '\0';
 	return (count);
 }
 
-char	*mlx_int_static_line(char **xpm_data,int *pos,int size)
+char	*mlx_int_static_line(char **xpm_data, int *pos, int size)
 {
-	static char	*copy = 0;
-	static int	len = 0;
-	int			len2;
+	static char	*copy = NULL;
+	static int	copy_len = 0;
 	char		*str;
+	int			len2;
 
-	str = xpm_data[(*pos)++];
-	if ((len2 = strlen(str))>len)
+	(void)size;
+	str = xpm_data[*pos];
+	(*pos)++;
+	if (!str)
+		return (NULL);
+	len2 = (int)strlen(str);
+	if (len2 > copy_len)
 	{
-			if (copy)
-					free(copy);
-			if (!(copy = malloc(len2+1)))
-					return ((char *)0);
-			len = len2;
+		if (copy)
+			free(copy);
+		copy = malloc(len2 + 1);
+		if (!copy)
+			return (NULL);
+		copy_len = len2;
 	}
-	strlcpy_is_not_posix(copy, str, len2);
-	
+	strlcpy_is_not_posix(copy, str, (unsigned int)len2 + 1);
 	return (copy);
 }
 
-
-int	mlx_int_get_col_name(char *str,int size)
+int	mlx_int_get_col_name(char *str, int size)
 {
 	int	result;
 
 	result = 0;
 	while (size--)
-		result = (result<<8)+*(str++);
-	
+		result = (result << 8) + (unsigned char)(*str++);
 	return (result);
 }
 
+/*
+** Map a color name to a numeric color. e.g. "red" -> 0xFF0000.
+** or "#FFFFFF" -> 0xFFFFFF
+*/
 int	mlx_int_get_text_rgb(char *name, char *end)
 {
-	int			i;
-	char		buff[64];
+	int		i;
+	char	buff[64];
 
 	if (*name == '#')
-			return (strtol(name+1,0,16));
+		return ((int)strtol(name + 1, NULL, 16));
 	if (end)
 	{
-			snprintf(buff, 64, "%s %s", name, end);
-			name = buff;
+		snprintf(buff, 64, "%s %s", name, end);
+		name = buff;
 	}
 	i = 0;
 	while (mlx_col_name[i].name)
 	{
-			if (!strcasecmp(mlx_col_name[i].name, name))
-					return (mlx_col_name[i].color);
-			i ++;
+		if (!strcasecmp(mlx_col_name[i].name, name))
+			return (mlx_col_name[i].color);
+		i++;
 	}
 	return (0);
 }
 
-
+/*
+** Writes one pixel 'col' into data, respecting the image's endianness.
+*/
 int	mlx_int_xpm_set_pixel(t_img *img, char *data, int opp, int col, int x)
 {
 	int	dec;
-	
+
 	dec = opp;
-  	while (dec--)
-    {
-    	if (img->image->byte_order)
-			*(data+x*opp+dec) = col&0xFF;
-      	else
-			*(data+x*opp+opp-dec-1) = col&0xFF;
-      	col >>= 8;
-    }
-}
-
-
-void	*mlx_int_parse_xpm(t_xvar *xvar,void *info,int info_size,char *(*f)())
-{
-		int		pos;
-		char	*line;
-		char	**tab;
-		char	*data;
-		char	*clip_data;
-		int		nc;
-		int		opp;
-		int		cpp;
-		int		col;
-		int		rgb_col;
-		int		col_name;
-		int		method;
-		int		x;
-		int		i;
-		int		j;
-		t_img	*img;
-		t_xpm_col	*colors;
-		int		*colors_direct;
-		int		width;
-		int		height;
-		XImage	*clip_img;
-		XGCValues	xgcv;
-		Pixmap	clip_pix;
-
-		colors = 0;
-		colors_direct = 0;
-		img = 0;
-		tab = 0;
-		pos = 0;
-		if (!(line = f(info,&pos,info_size)) ||
-						!(tab = mlx_int_str_to_wordtab(line)) || !(width = atoi(tab[0])) ||
-						!(height = atoi(tab[1])) || !(nc = atoi(tab[2])) ||
-						!(cpp = atoi(tab[3])) )
-				RETURN;
-		free(tab);
-		tab = 0;
-
-		method = 0;
-		if (cpp<=2)
-		{
-				method = 1;
-				if (!(colors_direct = malloc((cpp==2?65536:256)*sizeof(int))))
-						RETURN;
-		}
+	while (dec--)
+	{
+		if (img->image->byte_order)
+			*(data + x * opp + dec) = (col & 0xFF);
 		else
-				if (!(colors = malloc(nc*sizeof(*colors))))
-						RETURN;
-
-		clip_data = 0;
-
-		i = nc;
-		while (i--)
-		{
-				if (!(line = f(info,&pos,info_size)) ||
-								!(tab = mlx_int_str_to_wordtab(line+cpp)) )
-						RETURN;
-				j = 0;
-				while (tab[j] && strcmp(tab[j++],"c"));
-
-				if (!tab[j])
-						RETURN;
-				rgb_col = mlx_int_get_text_rgb(tab[j], tab[j+1]);
-				/*
-				if ((rgb_col = mlx_int_get_text_rgb(tab[j], tab[j+1]))==-1)
-				{
-						if (!(clip_data = malloc(4*width*height)) ||   ok, nice size ..
-										!(clip_img = XCreateImage(xvar->display, xvar->visual,
-														1, XYPixmap, 0, clip_data,
-														width, height, 8, (width+7)/8)) )
-								RETURN;
-						memset(clip_data, 0xFF, 4*width*height);
-				}
-				*/
-				if (method)
-						colors_direct[mlx_int_get_col_name(line,cpp)] = rgb_col;
-								// rgb_col>=0?mlx_get_color_value(xvar, rgb_col):rgb_col;
-				else
-				{
-						colors[i].name = mlx_int_get_col_name(line,cpp);
-						colors[i].col = rgb_col; //rgb_col>=0?mlx_get_color_value(xvar,rgb_col):rgb_col;
-				}
-				free(tab);
-				tab = (void *)0;
-		}
-
-		if (!(img = mlx_new_image(xvar,width,height)))
-				RETURN;
-		opp = img->bpp/8;
-
-
-		i = height;
-		data = img->data;
-		while (i--)
-		{
-				if (!(line = f(info,&pos,info_size)))
-						RETURN;
-				x = 0;
-				while (x<width)
-				{
-						col = 0;
-						col_name = mlx_int_get_col_name(line+cpp*x,cpp);
-						if (method)
-								col = colors_direct[col_name];
-						else
-						{
-								j = nc;
-								while (j--)
-										if (colors[j].name==col_name)
-										{
-												col = colors[j].col;
-												j = 0;
-										}
-						}
-						/*
-						if (col==-1)
-								XPutPixel(clip_img, x, height-1-i, 0);
-						else
-								mlx_int_xpm_set_pixel(img, data, opp, col, x);
-						x ++;
-						*/
-						if (col==-1)
-							col = 0xFF000000;
-						mlx_int_xpm_set_pixel(img, data, opp, col, x);
-						++x;
-				}
-				data += img->size_line;
-		}
-		/*
-		if (clip_data)
-		{
-				if (!(clip_pix = XCreatePixmap(xvar->display, xvar->root,
-												width, height, 1)) )
-						RETURN;
-				img->gc = XCreateGC(xvar->display, clip_pix, 0, &xgcv);
-				XPutImage(xvar->display, clip_pix, img->gc, clip_img,
-								0, 0, 0, 0, width, height);
-				XFreeGC(xvar->display, img->gc);
-				xgcv.clip_mask = clip_pix;
-				xgcv.function = GXcopy;
-				xgcv.plane_mask = AllPlanes;
-				img->gc = XCreateGC(xvar->display, xvar->root, GCClipMask|GCFunction|
-								GCPlaneMask, &xgcv);
-				XSync(xvar->display, False);
-				XDestroyImage(clip_img);
-		}
-		*/
-		if (colors)
-				free(colors);
-		if (colors_direct)
-				free(colors_direct);
-		return (img);
+			*(data + x * opp + (opp - dec - 1)) = (col & 0xFF);
+		col >>= 8;
+	}
+	return (0);
 }
-
 
 int	mlx_int_file_get_rid_comment(char *ptr, int size)
 {
-		int	com_begin;
-		int	com_end;
+	int	com_begin;
+	int	com_end;
 
-		while ((com_begin = mlx_int_str_str_cote(ptr,"/*",size))!=-1)
-		{
-				com_end = mlx_int_str_str(ptr+com_begin+2,"*/",size-com_begin-2);
-				memset(ptr+com_begin,' ',com_end+4);
-		}
-		while ((com_begin = mlx_int_str_str_cote(ptr,"//",size))!=-1)
-		{
-				com_end = mlx_int_str_str(ptr+com_begin+2,"\n",size-com_begin-2);
-				memset(ptr+com_begin,' ',com_end+3);
-		}
+	while ((com_begin = mlx_int_str_str_cote(ptr, "/*", size)) != -1)
+	{
+		com_end = mlx_int_str_str(ptr + com_begin + 2, "*/", size - com_begin - 2);
+		if (com_end == -1)
+			break ;
+		memset(ptr + com_begin, ' ', (size_t)com_end + 4);
+	}
+	while ((com_begin = mlx_int_str_str_cote(ptr, "//", size)) != -1)
+	{
+		com_end = mlx_int_str_str(ptr + com_begin + 2, "\n", size - com_begin - 2);
+		if (com_end == -1)
+			break ;
+		memset(ptr + com_begin, ' ', (size_t)com_end + 3);
+	}
+	return (0);
 }
 
-
-void	*mlx_xpm_file_to_image(t_xvar *xvar,char *file,int *width,int *height)
+static int	parse_xpm_header(char *line, int *width, int *height,
+	int *nc, int *cpp)
 {
-		int	fd;
-		int	size;
-		char	*ptr;
-		t_img	*img;
+	char	**tab;
 
-		fd = -1;
-		if ((fd = open(file,O_RDONLY))==-1 || (size = lseek(fd,0,SEEK_END))==-1 ||
-						(ptr = mmap(0,size,PROT_WRITE|PROT_READ,MAP_PRIVATE,fd,0))==
-						(void *)MAP_FAILED)
-		{
-				if (fd>=0)
-						close(fd);
-				return ((void *)0);
-		}
-		mlx_int_file_get_rid_comment(ptr, size);
-		if (img = mlx_int_parse_xpm(xvar,ptr,size,mlx_int_get_line))
-		{
-				*width = img->width;
-				*height = img->height;
-		}
-		munmap(ptr,size);
-		close(fd);
-		return (img);
+	tab = mlx_int_str_to_wordtab(line);
+	if (!tab)
+		return (0);
+	*width = atoi(tab[0]);
+	*height = atoi(tab[1]);
+	*nc = atoi(tab[2]);
+	*cpp = atoi(tab[3]);
+	free(tab);
+	if (*width <= 0 || *height <= 0 || *nc <= 0 || *cpp <= 0)
+		return (0);
+	return (1);
 }
 
-void	*mlx_xpm_to_image(t_xvar *xvar,char **xpm_data,int *width,int *height)
+/*
+** If cpp <= 2, we store colors in a direct array: "colors_direct[size]" 
+** else we store them in an array of t_xpm_col: "colors[size]" 
+*/
+static int	parse_xpm_colors(t_xvar *xvar, void *info, int info_size,
+	char *(*f)(), int cpp, int nc, t_xpm_col **colors, int **colors_direct)
 {
-		t_img	*img;
+	int		i;
+	int		pos;
+	char	*line;
+	char	**tab;
+	int		rgb_col;
+	int		method;
 
-		if (img = mlx_int_parse_xpm(xvar,xpm_data,0,mlx_int_static_line))
+	i = 0;
+	pos = 0;
+	method = (cpp <= 2); /* 1 => direct array, 0 => t_xpm_col array */
+
+	if (method)
+	{
+		*colors_direct = malloc((cpp == 2 ? 65536 : 256) * sizeof(int));
+		if (!(*colors_direct))
+			return (0);
+	}
+	else
+	{
+		*colors = malloc(nc * sizeof(**colors));
+		if (!(*colors))
+			return (0);
+	}
+	while (i < nc)
+	{
+		line = f(info, &pos, info_size);
+		if (!line)
+			return (0);
+		/* skip 'cpp' chars, parse the remainder with mlx_int_str_to_wordtab */
+		tab = mlx_int_str_to_wordtab(line + cpp);
+		if (!tab)
+			return (0);
+		rgb_col = 0;
+		rgb_col = mlx_int_get_text_rgb(tab[1], tab[2]); /* looking for "c" ? */
+		if (method)
 		{
-				*width = img->width;
-				*height = img->height;
+			/* direct color array: index by color name's int code */
+			(*colors_direct)[mlx_int_get_col_name(line, cpp)] = rgb_col;
 		}
-		return (img);
+		else
+		{
+			(*colors)[nc - 1 - i].name = mlx_int_get_col_name(line, cpp);
+			(*colors)[nc - 1 - i].col = rgb_col;
+		}
+		i++;
+		free(tab);
+	}
+	return (1);
+}
+
+static int	parse_xpm_pixels(t_img *img, t_xvar *xvar, void *info,
+	char *(*f)(), int info_size, int width, int height,
+	int nc, int cpp, t_xpm_col *colors, int *colors_direct)
+{
+	char		*line;
+	char		*data;
+	int			i;
+	int			x;
+	int			col;
+	int			col_name;
+	int			pos;
+	int			opp;
+
+	pos = 0;
+	opp = img->bpp / 8;
+	i = height;
+	data = img->data;
+	while (i--)
+	{
+		line = f(info, &pos, info_size);
+		if (!line)
+			return (0);
+		x = 0;
+		while (x < width)
+		{
+			col = 0;
+			col_name = mlx_int_get_col_name(line + (cpp * x), cpp);
+			if (colors_direct)
+				col = colors_direct[col_name];
+			else
+				col = find_color_in_tab(col_name, colors, nc);
+			/*
+			** if col == -1 => "transparent"? You might do something else
+			** but for simplicity, let's assign 0xFF000000 if that matters.
+			*/
+			if (col == -1)
+				col = 0xFF000000;
+			mlx_int_xpm_set_pixel(img, data, opp, col, x);
+			x++;
+		}
+		data += img->size_line;
+	}
+	return (1);
+}
+
+/*
+** A small helper to find 'col_name' in the array 'colors'. 
+** Typically, you stored them in reverse order with "nc - 1 - i" 
+** but that depends on your original logic.
+*/
+static int	find_color_in_tab(int col_name, t_xpm_col *colors, int nc)
+{
+	int	j;
+
+	j = 0;
+	while (j < nc)
+	{
+		if (colors[j].name == col_name)
+			return (colors[j].col);
+		j++;
+	}
+	return (-1);
+}
+
+/* ------------------------------------------------------------------------ */
+/*                          The main parse function                          */
+/* ------------------------------------------------------------------------ */
+
+static void	*mlx_int_parse_xpm(t_xvar *xvar, void *info, int info_size,
+	char *(*f)())
+{
+	t_img		*img;
+	t_xpm_col	*colors;
+	int			*colors_direct;
+	int			width;
+	int			height;
+	int			nc;
+	int			cpp;
+	char		*line;
+	int			pos;
+
+	img = NULL;
+	colors = NULL;
+	colors_direct = NULL;
+	pos = 0;
+	line = f(info, &pos, info_size);
+	if (!line)
+		return (NULL);
+	if (!parse_xpm_header(line, &width, &height, &nc, &cpp))
+		return (NULL);
+	if (!parse_xpm_colors(xvar, info, info_size, f,
+			cpp, nc, &colors, &colors_direct))
+		return (NULL);
+	img = mlx_new_image(xvar, width, height);
+	if (!img)
+	{
+		if (colors)
+			free(colors);
+		if (colors_direct)
+			free(colors_direct);
+		return (NULL);
+	}
+	if (!parse_xpm_pixels(img, xvar, info, f, info_size,
+			width, height, nc, cpp, colors, colors_direct))
+	{
+		/* possibly free 'img', 'colors', 'colors_direct' on failure */
+		if (colors)
+			free(colors);
+		if (colors_direct)
+			free(colors_direct);
+		XDestroyImage(img->image);
+		XFreePixmap(xvar->display, img->pix);
+		free(img);
+		return (NULL);
+	}
+	if (colors)
+		free(colors);
+	if (colors_direct)
+		free(colors_direct);
+	return (img);
 }

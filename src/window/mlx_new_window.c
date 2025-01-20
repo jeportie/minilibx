@@ -1,13 +1,14 @@
-/*
-** mlx_new_window.c for MiniLibX in 
-** 
-** Made by Charlie Root
-** Login   <ol@epitech.net>
-** 
-** Started on  Mon Jul 31 17:29:02 2000 Charlie Root
-** Last update Thu Oct  4 15:44:43 2001 Charlie Root
-*/
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mlx_new_window.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jeportie <jeportie@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/20 09:30:53 by jeportie          #+#    #+#             */
+/*   Updated: 2025/01/20 09:34:40 by jeportie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 /*
 ** We do not use White/BlackPixel macro, TrueColor Visual make sure
@@ -16,10 +17,9 @@
 ** With mlx_int_wait_first_expose, no flush is needed.
 */
 
-#include	"mlx_int.h"
+#include "../../include/mlx_int.h"
 
-
-void	*mlx_new_window(t_xvar *xvar,int size_x,int size_y,char *title)
+void	*mlx_new_window(t_xvar *xvar, int size_x, int size_y, char *title)
 {
 	t_win_list				*new_win;
 	XSetWindowAttributes	xswa;
@@ -36,10 +36,10 @@ void	*mlx_new_window(t_xvar *xvar,int size_x,int size_y,char *title)
 	xswa.event_mask = 0xFFFFFF;	/* all events */
 	if (!(new_win = malloc(sizeof(*new_win))))
 		return ((void *)0);
-	new_win->window = XCreateWindow(xvar->display,xvar->root,0,0,size_x,size_y,
-					0,CopyFromParent,InputOutput,xvar->visual,
+	new_win->window = XCreateWindow(xvar->display, xvar->root, 0, 0, size_x, size_y,
+					0, CopyFromParent, InputOutput, xvar->visual,
 					CWEventMask|CWBackPixel|CWBorderPixel|
-					CWColormap,&xswa);
+					CWColormap, &xswa);
 	mlx_int_anti_resize_win(xvar,new_win->window,size_x,size_y);
 	XStoreName(xvar->display,new_win->window,title);
 	XSetWMProtocols(xvar->display, new_win->window, &(xvar->wm_delete_window), 1);

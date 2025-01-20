@@ -6,11 +6,11 @@
 /*   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/30 13:30:47 by amalliar          #+#    #+#             */
-/*   Updated: 2020/09/30 17:08:36 by amalliar         ###   ########.fr       */
+/*   Updated: 2025/01/20 13:58:06 by jeportie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mlx_int.h"
+#include "../../include/mlx_int.h"
 
 /*
 ** Allows to specify the font that will be used by mlx_string_put.
