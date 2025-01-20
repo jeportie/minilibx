@@ -6,7 +6,7 @@
 /*   By: jeportie <jeportie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/18 21:45:49 by jeportie          #+#    #+#             */
-/*   Updated: 2025/01/19 21:27:34 by jeportie         ###   ########.fr       */
+/*   Updated: 2025/01/20 13:45:50 by jeportie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <sys/shm.h>
 # include <X11/extensions/XShm.h>
 # include <X11/XKBlib.h>
+# include <X11/xpm.h>
 # include "define.h"
 
 typedef int	(*t_mlx_event_f)(void *event_data, void *user_param);
@@ -123,18 +124,23 @@ typedef struct s_mlx_app
 	void	*win_ptr;
 }				t_mlx_app;
 
-int	mlx_int_do_nothing(void *param);
+int		mlx_int_do_nothing(void *param);
 int		mlx_int_get_visual(t_xvar *xvar);
-int	mlx_int_wait_first_expose(t_xvar *xvar, Window win);
+int		mlx_int_wait_first_expose(t_xvar *xvar, Window win);
 void	mlx_int_rgb_conversion(t_xvar *xvar);
-int	mlx_int_deal_shm(t_xvar *xvar);
-void	*mlx_int_new_xshm_image();
-char	**mlx_int_str_to_wordtab();
-void	*mlx_new_image();
-int		shm_att_pb();
-int	mlx_int_set_win_event_mask(t_xvar *xvar);
+int		mlx_int_deal_shm(t_xvar *xvar);
+void	*mlx_int_new_xshm_image(t_xvar *xvar,int width,int height,int format);
+char	**mlx_int_str_to_wordtab(char *str);
+void	*mlx_new_image(t_xvar *xvar,int width, int height);
+void	*mlx_int_xpm_f_image(t_xvar *xvar, int *width, int *height, int (*xpm_func)(), void *param);
+int		mlx_int_egal_img(XImage *img1,XImage *img2);
+
+int		shm_att_pb(Display *d,XErrorEvent *ev);
+int		mlx_int_get_good_color(t_xvar *xvar, int color);
+int		mlx_int_set_win_event_mask(t_xvar *xvar);
 int		mlx_int_str_str_cote(char *str, char *find, int len);
 int		mlx_int_str_str(char *str, char *find, int len);
-int	mlx_handle_event(t_xvar *xvar, XEvent *ev, t_win_list *win);
+int		mlx_handle_event(t_xvar *xvar, XEvent *ev, t_win_list *win);
+int		mlx_int_anti_resize_win(t_xvar *xvar, Window win, int w, int h);
 
 #endif /* MLX_INT_H */

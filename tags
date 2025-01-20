@@ -11,11 +11,13 @@ CC	test/Makefile.mk	/^	CC = clang$/;"	m
 CFLAGS	Makefile.mk	/^CFLAGS	= -O3 -I$(INC)$/;"	m
 CFLAGS	test/Makefile.mk	/^CFLAGS= -I$(INC) -O3 -I.. -g$/;"	m
 DEFINE_H	include/define.h	14;"	d
-ENV_DISPLAY	include/define.h	22;"	d
-ERR_MALLOC	include/define.h	27;"	d
-ERR_NO_TRUECOLOR	include/define.h	30;"	d
-ERR_NO_X_DISPLAY	include/define.h	28;"	d
-ERR_WINDOW_CREATION	include/define.h	29;"	d
+ENV_DISPLAY	include/define.h	25;"	d
+ERR_MALLOC	include/define.h	29;"	d
+ERR_NO_TRUECOLOR	include/define.h	32;"	d
+ERR_NO_X_DISPLAY	include/define.h	30;"	d
+ERR_WINDOW_CREATION	include/define.h	31;"	d
+ERR_XPM_ALLOC	include/define.h	36;"	d
+ERR_XPM_PARSE	include/define.h	35;"	d
 IM1_SX	test/main.c	7;"	d	file:
 IM1_SY	test/main.c	8;"	d	file:
 IM3_SX	test/main.c	9;"	d	file:
@@ -24,28 +26,27 @@ INC	Makefile.mk	/^INC	=%%%%$/;"	m
 INC	test/Makefile.mk	/^INC=%%%%$/;"	m
 INCLIB	test/Makefile.mk	/^INCLIB=$(INC)\/..\/lib$/;"	m
 LFLAGS	test/Makefile.mk	/^LFLAGS = -L.. -lmlx -L$(INCLIB) -lXext -lX11 -lm$/;"	m
-LOCALHOST	include/define.h	23;"	d
+LOCALHOST	include/define.h	26;"	d
 MLX_H	include/mlx.h	14;"	d
 MLX_INT_H	include/mlx_int.h	14;"	d
-MLX_MAX_EVENT	include/define.h	20;"	d
-MLX_TYPE_SHM	include/define.h	17;"	d
-MLX_TYPE_SHM_PIXMAP	include/define.h	16;"	d
-MLX_TYPE_XIMAGE	include/define.h	18;"	d
+MLX_MAX_EVENT	include/define.h	23;"	d
+MLX_TYPE_SHM	include/define.h	20;"	d
+MLX_TYPE_SHM_PIXMAP	include/define.h	19;"	d
+MLX_TYPE_XIMAGE	include/define.h	21;"	d
 NAME	Makefile.mk	/^NAME		= libmlx.a$/;"	m
 NAME	test/Makefile.mk	/^NAME= mlx-test$/;"	m
 NAME_UNAME	Makefile.mk	/^NAME_UNAME	= libmlx_$(UNAME).a$/;"	m
 OBJ	Makefile.mk	/^OBJ	= $(addprefix $(OBJ_DIR)\/,$(SRC:%.c=%.o))$/;"	m
 OBJ	test/Makefile.mk	/^OBJ = $(SRC:%.c=%.o)$/;"	m
 OBJ_DIR	Makefile.mk	/^OBJ_DIR = obj$/;"	m
-RETURN	src/image/mlx_xpm.c	17;"	d	file:
 SRC	Makefile.mk	/^SRC	= mlx_init.c mlx_new_window.c mlx_pixel_put.c mlx_loop.c \\$/;"	m
 SRC	test/Makefile.mk	/^SRC = main.c$/;"	m
 UNAME	Makefile.mk	/^UNAME = $(shell uname)$/;"	m
 UNAME	test/Makefile.mk	/^UNAME := $(shell uname)$/;"	m
-WARN_SHM_ATTACH	include/define.h	31;"	d
+WARN_SHM_ATTACH	include/define.h	33;"	d
 WIN1_SX	test/main.c	5;"	d	file:
 WIN1_SY	test/main.c	6;"	d	file:
-X_ShmAttach	src/image/mlx_new_image.c	20;"	d	file:
+X_ShmAttach	src/image/mlx_new_image.c	19;"	d	file:
 at_exit	test/run_tests.sh	/^at_exit() {$/;"	f
 bpp	include/mlx_int.h	/^	int				bpp;$/;"	m	struct:s_img
 bpp1	test/main.c	/^int	bpp1;$/;"	v
@@ -75,6 +76,7 @@ endian3	test/main.c	/^int	endian3;$/;"	v
 endian4	test/main.c	/^int	endian4;$/;"	v
 expose_win1	test/main.c	/^int	expose_win1(void *p)$/;"	f
 expose_win2	test/main.c	/^int	expose_win2(void *p)$/;"	f
+find_color_in_tab	src/image/mlx_xpm.c	/^static int	find_color_in_tab(int col_name, t_xpm_col *colors, int nc)$/;"	f	file:
 format	include/mlx_int.h	/^	int				format;$/;"	m	struct:s_img
 gc	include/mlx_int.h	/^	GC					gc;$/;"	m	struct:s_win_list
 gc	include/mlx_int.h	/^	GC				gc;$/;"	m	struct:s_img
@@ -119,20 +121,20 @@ mlx_do_sync	src/events/mlx_hook.c	/^int	mlx_do_sync(t_xvar *xvar)$/;"	f
 mlx_expose_hook	src/events/mlx_expose_hook.c	/^int	mlx_expose_hook(t_win_list *win, int (*funct)(void *, void *), void *param)$/;"	f
 mlx_ext_fullscreen	src/window/mlx_ext_randr.c	/^int			mlx_ext_fullscreen(t_xvar *xvar, t_win_list *win, int fullscreen)$/;"	f
 mlx_flush_event	src/events/mlx_flush_event.c	/^int	mlx_flush_event(t_xvar *xvar)$/;"	f
-mlx_get_color_value	src/image/mlx_get_color_value.c	/^int             mlx_get_color_value(t_xvar *xvar,int color)$/;"	f
-mlx_get_data_addr	src/image/mlx_get_data_addr.c	/^char	*mlx_get_data_addr(t_img *img,int *bits_per_pixel,$/;"	f
-mlx_get_screen_size	src/window/mlx_screen_size.c	/^int		mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey)$/;"	f
+mlx_get_color_value	src/image/mlx_get_color_value.c	/^int	mlx_get_color_value(t_xvar *xvar, int color)$/;"	f
+mlx_get_data_addr	src/image/mlx_get_data_addr.c	/^char	*mlx_get_data_addr(t_img *img, int *bits_per_pixel,$/;"	f
+mlx_get_screen_size	src/window/mlx_screen_size.c	/^int	mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey)$/;"	f
 mlx_handle_event	src/events/mlx_int_param_event.c	/^int	mlx_handle_event(t_xvar *xvar, XEvent *ev, t_win_list *win)$/;"	f
 mlx_hook	src/events/mlx_hook.c	/^int	mlx_hook(t_win_list *win, int x_event, int x_mask,$/;"	f
 mlx_init	src/init/mlx_init.c	/^void	*mlx_init(void)$/;"	f
-mlx_int_anti_resize_win	src/window/mlx_int_anti_resize_win.c	/^int	mlx_int_anti_resize_win(t_xvar *xvar,Window win,int w,int h)$/;"	f
+mlx_int_anti_resize_win	src/window/mlx_int_anti_resize_win.c	/^int	mlx_int_anti_resize_win(t_xvar *xvar, Window win, int w, int h)$/;"	f
 mlx_int_deal_shm	src/init/mlx_init.c	/^int	mlx_int_deal_shm(t_xvar *xvar)$/;"	f
 mlx_int_do_nothing	src/init/mlx_int_do_nothing.c	/^int	mlx_int_do_nothing(void *param)$/;"	f
-mlx_int_egal_img	src/image/mlx_lib_xpm.c	/^int	mlx_int_egal_img(XImage *img1,XImage *img2)$/;"	f
+mlx_int_egal_img	src/image/mlx_lib_xpm.c	/^int	mlx_int_egal_img(XImage *img1, XImage *img2)$/;"	f
 mlx_int_file_get_rid_comment	src/image/mlx_xpm.c	/^int	mlx_int_file_get_rid_comment(char *ptr, int size)$/;"	f
-mlx_int_get_col_name	src/image/mlx_xpm.c	/^int	mlx_int_get_col_name(char *str,int size)$/;"	f
-mlx_int_get_good_color	src/image/mlx_get_color_value.c	/^int		mlx_int_get_good_color(t_xvar *xvar,int color)$/;"	f
-mlx_int_get_line	src/image/mlx_xpm.c	/^char	*mlx_int_get_line(char *ptr,int *pos,int size)$/;"	f
+mlx_int_get_col_name	src/image/mlx_xpm.c	/^int	mlx_int_get_col_name(char *str, int size)$/;"	f
+mlx_int_get_good_color	src/image/mlx_get_color_value.c	/^int	mlx_int_get_good_color(t_xvar *xvar, int color)$/;"	f
+mlx_int_get_line	src/image/mlx_xpm.c	/^char	*mlx_int_get_line(char *ptr, int *pos, int size)$/;"	f
 mlx_int_get_text_rgb	src/image/mlx_xpm.c	/^int	mlx_int_get_text_rgb(char *name, char *end)$/;"	f
 mlx_int_get_visual	src/init/mlx_int_get_visual.c	/^int	mlx_int_get_visual(t_xvar *xvar)$/;"	f
 mlx_int_new_image	src/image/mlx_new_image.c	/^void	*mlx_int_new_image(t_xvar *xvar,int width, int height,int format)$/;"	f
@@ -145,15 +147,15 @@ mlx_int_param_KeyRelease	src/events/mlx_int_param_event.c	/^static int	mlx_int_p
 mlx_int_param_MotionNotify	src/events/mlx_int_param_event.c	/^static int	mlx_int_param_MotionNotify(t_xvar *xvar,$/;"	f	file:
 mlx_int_param_generic	src/events/mlx_int_param_event.c	/^static int	mlx_int_param_generic(t_xvar *xvar, XEvent *ev, t_win_list *win)$/;"	f	file:
 mlx_int_param_undef	src/events/mlx_int_param_event.c	/^static int	mlx_int_param_undef(void *event_data, void *user_param)$/;"	f	file:
-mlx_int_parse_xpm	src/image/mlx_xpm.c	/^void	*mlx_int_parse_xpm(t_xvar *xvar,void *info,int info_size,char *(*f)())$/;"	f
+mlx_int_parse_xpm	src/image/mlx_xpm.c	/^static void	*mlx_int_parse_xpm(t_xvar *xvar, void *info, int info_size,$/;"	f	file:
 mlx_int_rgb_conversion	src/init/mlx_init.c	/^void	mlx_int_rgb_conversion(t_xvar *xvar)$/;"	f
 mlx_int_set_win_event_mask	src/events/mlx_int_set_win_event_mask.c	/^int	mlx_int_set_win_event_mask(t_xvar *xvar)$/;"	f
-mlx_int_static_line	src/image/mlx_xpm.c	/^char	*mlx_int_static_line(char **xpm_data,int *pos,int size)$/;"	f
-mlx_int_str_str	src/image/mlx_int_str_to_wordtab.c	/^int	mlx_int_str_str(char *str,char *find,int len)$/;"	f
-mlx_int_str_str_cote	src/image/mlx_int_str_to_wordtab.c	/^int	mlx_int_str_str_cote(char *str,char *find,int len)$/;"	f
+mlx_int_static_line	src/image/mlx_xpm.c	/^char	*mlx_int_static_line(char **xpm_data, int *pos, int size)$/;"	f
+mlx_int_str_str	src/image/mlx_int_str_to_wordtab.c	/^int	mlx_int_str_str(char *str, char *find, int len)$/;"	f
+mlx_int_str_str_cote	src/image/mlx_int_str_to_wordtab.c	/^int	mlx_int_str_str_cote(char *str, char *find, int len)$/;"	f
 mlx_int_str_to_wordtab	src/image/mlx_int_str_to_wordtab.c	/^char	**mlx_int_str_to_wordtab(char *str)$/;"	f
 mlx_int_wait_first_expose	src/events/mlx_int_wait_first_expose.c	/^int	mlx_int_wait_first_expose(t_xvar *xvar, Window win)$/;"	f
-mlx_int_xpm_f_image	src/image/mlx_lib_xpm.c	/^void		*mlx_int_xpm_f_image(t_xvar *xvar,int *width,int *height,$/;"	f
+mlx_int_xpm_f_image	src/image/mlx_lib_xpm.c	/^void	*mlx_int_xpm_f_image(t_xvar *xvar, int *width, int *height,$/;"	f
 mlx_int_xpm_set_pixel	src/image/mlx_xpm.c	/^int	mlx_int_xpm_set_pixel(t_img *img, char *data, int opp, int col, int x)$/;"	f
 mlx_key_hook	src/events/mlx_key_hook.c	/^int	mlx_key_hook(t_win_list *win, int (*funct)(void *, void *), void *param)$/;"	f
 mlx_loop	src/events/mlx_loop.c	/^int	mlx_loop(t_xvar *xvar)$/;"	f
@@ -166,16 +168,15 @@ mlx_mouse_move	src/events/mlx_mouse.c	/^int	mlx_mouse_move(t_xvar *xvar, t_win_l
 mlx_mouse_show	src/events/mlx_mouse.c	/^int	mlx_mouse_show(t_xvar *xvar, t_win_list *win)$/;"	f
 mlx_new_image	src/image/mlx_new_image.c	/^void	*mlx_new_image(t_xvar *xvar,int width, int height)$/;"	f
 mlx_new_image2	src/image/mlx_new_image.c	/^void	*mlx_new_image2(t_xvar *xvar,int width, int height)$/;"	f
-mlx_new_window	src/window/mlx_new_window.c	/^void	*mlx_new_window(t_xvar *xvar,int size_x,int size_y,char *title)$/;"	f
-mlx_pixel_put	src/image/mlx_pixel_put.c	/^int		mlx_pixel_put(t_xvar *xvar,t_win_list *win,$/;"	f
+mlx_new_window	src/window/mlx_new_window.c	/^void	*mlx_new_window(t_xvar *xvar, int size_x, int size_y, char *title)$/;"	f
+mlx_pixel_put	src/image/mlx_pixel_put.c	/^int	mlx_pixel_put(t_xvar *xvar, t_win_list *win, int x, int y, int color)$/;"	f
 mlx_ptr	include/mlx_int.h	/^	t_xvar	*mlx_ptr;$/;"	m	struct:s_mlx_app
-mlx_put_image_to_window	src/image/mlx_put_image_to_window.c	/^int	mlx_put_image_to_window(t_xvar *xvar,t_win_list *win,t_img *img,$/;"	f
+mlx_put_image_to_window	src/image/mlx_put_image_to_window.c	/^int	mlx_put_image_to_window(t_xvar *xvar, t_win_list *win, t_img *img,$/;"	f
 mlx_set_font	src/image/mlx_set_font.c	/^void	mlx_set_font(t_xvar *xvar, t_win_list *win, char *name)$/;"	f
-mlx_string_put	src/image/mlx_string_put.c	/^int		mlx_string_put(t_xvar *xvar,t_win_list *win,$/;"	f
+mlx_string_put	src/image/mlx_string_put.c	/^int	mlx_string_put(t_xvar *xvar, t_win_list *win, int x, int y, int color,$/;"	f
 mlx_xpm_file_to_image	src/image/mlx_lib_xpm.c	/^void	*mlx_xpm_file_to_image(t_xvar *xvar,char *filename,$/;"	f
-mlx_xpm_file_to_image	src/image/mlx_xpm.c	/^void	*mlx_xpm_file_to_image(t_xvar *xvar,char *file,int *width,int *height)$/;"	f
+mlx_xpm_img_cleanup	src/image/mlx_lib_xpm.c	/^static void	*mlx_xpm_img_cleanup(XImage *img1, XImage *img2,$/;"	f	file:
 mlx_xpm_to_image	src/image/mlx_lib_xpm.c	/^void	*mlx_xpm_to_image(t_xvar *xvar,char **data,int *width,int *height)$/;"	f
-mlx_xpm_to_image	src/image/mlx_xpm.c	/^void	*mlx_xpm_to_image(t_xvar *xvar,char **xpm_data,int *width,int *height)$/;"	f
 mouse_win1	test/main.c	/^int	mouse_win1(int button,int x,int y, void *p)$/;"	f
 mouse_win2	test/main.c	/^int	mouse_win2(int button,int x,int y, void *p)$/;"	f
 mouse_win3	test/main.c	/^int	mouse_win3(int x,int y, void *p)$/;"	f
@@ -185,6 +186,9 @@ name	include/mlx_int.h	/^	int		name;$/;"	m	struct:s_xpm_col
 next	include/mlx_int.h	/^	struct s_win_list	*next;$/;"	m	struct:s_win_list	typeref:struct:s_win_list::s_win_list
 param	include/mlx_int.h	/^	void			*param;$/;"	m	struct:s_event_list
 parse_args	configure	/^parse_args(){$/;"	f
+parse_xpm_colors	src/image/mlx_xpm.c	/^static int	parse_xpm_colors(t_xvar *xvar, void *info, int info_size,$/;"	f	file:
+parse_xpm_header	src/image/mlx_xpm.c	/^static int	parse_xpm_header(char *line, int *width, int *height,$/;"	f	file:
+parse_xpm_pixels	src/image/mlx_xpm.c	/^static int	parse_xpm_pixels(t_img *img, t_xvar *xvar, void *info,$/;"	f	file:
 pix	include/mlx_int.h	/^	Pixmap			pix;$/;"	m	struct:s_img
 placeholder	include/mlx_int.h	/^	int	placeholder;$/;"	m	struct:s_mlx_expose_data
 private_cmap	include/mlx_int.h	/^	int			private_cmap;$/;"	m	struct:s_xvar
